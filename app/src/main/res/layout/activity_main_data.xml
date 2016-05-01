@@ -12,5 +12,135 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/txtStatus"
+        android:id="@+id/textStatus" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtHealth"
+        android:id="@+id/textHealth"
+        android:layout_below="@+id/textStatus"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtPresent"
+        android:id="@+id/textPresent"
+        android:layout_below="@+id/textHealth"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtLevel"
+        android:id="@+id/textLevel"
+        android:layout_below="@+id/textPresent"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtScale"
+        android:id="@+id/textScale"
+        android:layout_below="@+id/textLevel"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtPlugged"
+        android:id="@+id/textPlugged"
+        android:layout_below="@+id/textScale"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtVoltage"
+        android:id="@+id/textVoltage"
+        android:layout_below="@+id/textPlugged"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtTemperature"
+        android:id="@+id/textTemperature"
+        android:layout_below="@+id/textVoltage"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtTechnology"
+        android:id="@+id/textTechnology"
+        android:layout_below="@+id/textTemperature"
+        android:layout_alignParentStart="true" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueStatus"
+        android:layout_alignBottom="@+id/textStatus"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueHealth"
+        android:layout_alignBottom="@+id/textHealth"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValuePresent"
+        android:layout_alignBottom="@+id/textPresent"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueLevel"
+        android:layout_alignBottom="@+id/textLevel"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueScale"
+        android:layout_alignBottom="@+id/textScale"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValuePlugged"
+        android:layout_alignBottom="@+id/textPlugged"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueVoltage"
+        android:layout_alignBottom="@+id/textVoltage"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueTemperature"
+        android:layout_alignBottom="@+id/textTemperature"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueTechnology"
+        android:layout_alignBottom="@+id/textTechnology"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageIcon"
+        android:layout_below="@+id/textTechnology"
+        android:layout_alignEnd="@+id/textScale" />
+
 </RelativeLayout>

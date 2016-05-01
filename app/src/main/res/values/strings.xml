@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">CurrentView</string>
+
+    <string name="txtStatus">Status</string>
+    <string name="txtHealth">Health</string>
+    <string name="txtPresent">Present</string>
+    <string name="txtLevel">Level</string>
+    <string name="txtScale">Max. Level</string>
+    <string name="txtPlugged">Charging via</string>
+    <string name="txtVoltage">Voltage</string>
+    <string name="txtTemperature">Temperature</string>
+    <string name="txtTechnology">Technology</string>
+
+
+    <string name="valUnknownValue">&lt;unknown&gt;</string>
+
+    <string name="valUnknown">Unknown</string>
+    <string name="valCharging">Charging</string>
+    <string name="valDischarging">Discharging</string>
+    <string name="valNotCharging">Not Charging</string>
+    <string name="valFull">Full</string>
+
+    <string name="valGood">Good</string>
+    <string name="valOverHeat">OverHeat</string>
+    <string name="valDead">Dead</string>
+    <string name="valOverVoltage">OverVoltage</string>
+    <string name="valUnspecifiedFailure">unspecified failure</string>
+    <string name="valCold">Cold</string>
+
+    <string name="valAC">AC</string>
+    <string name="valUSB">USB</string>
+    <string name="valWireless">Wireless</string>
+
 </resources>
