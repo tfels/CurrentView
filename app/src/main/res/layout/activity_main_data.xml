@@ -163,6 +163,13 @@
         android:id="@+id/textValueCurrentAvg"
         android:layout_alignBottom="@+id/textCurrentAvg"
         android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueDebug"
+        android:layout_below="@+id/textValueCurrentAvg"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"

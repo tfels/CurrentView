@@ -19,9 +19,12 @@ public class MainDataActivity extends AppCompatActivity {
     private TextView txtValueTechnology = null;
     private TextView txtValueCurrent = null;
     private TextView txtValueCurrentAvg = null;
+    private TextView txtDebug = null;
     private ImageView imgIcon = null;
 
     private BatteryData batData;
+    Handler updateHandler;
+    private Runnable updateRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +42,36 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueTechnology = (TextView)findViewById(R.id.textValueTechnology);
         txtValueCurrent = (TextView)findViewById(R.id.textValueCurrent);
         txtValueCurrentAvg = (TextView)findViewById(R.id.textValueCurrentAvg);
+        txtDebug = (TextView)findViewById(R.id.textValueDebug);
         imgIcon  = (ImageView)findViewById(R.id.imageIcon);
 
         batData = new BatteryData(getApplicationContext());
+
+        // prepare data update handler
+        updateHandler = new Handler();
+        updateRunnable = new Runnable(){
+            public void run(){
+                batData.updateData();
+                refreshUi();
+                updateHandler.postDelayed(updateRunnable, 1*1000);
+            }
+        };
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        batData.updateData();
-        refreshUi();
+        updateHandler.post(updateRunnable);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateHandler.removeCallbacks(updateRunnable);
+    }
+
+    private int counter = 0;
     private void refreshUi()
     {
         txtValueStatus.setText(batData.getStatusText());
@@ -66,6 +86,7 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueTechnology.setText(batData.getTechnologyText());
         txtValueCurrent.setText(batData.getCurrentText());
         txtValueCurrentAvg.setText(batData.getCurrentAvgText());
+        txtDebug.setText(""+(counter++));
 
         imgIcon.setImageResource(batData.getIconId());
     }
