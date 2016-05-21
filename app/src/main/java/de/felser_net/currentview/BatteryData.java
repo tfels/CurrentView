@@ -24,13 +24,24 @@ public class BatteryData {
     private String technology = "";
     private int invalid_charger = 0;
 
+    private int current = 0;
+    private int currentAvg = 0;
+
     public BatteryData(Context iContext) {
         context = iContext;
     }
 
     public void updateData() {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        extractIntentData(batteryStatus);
 
+        // additional data which is also available in the intent, but this is the official API
+        BatteryManager mBatteryManager = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
+        current = mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        currentAvg = mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+    }
+
+    public void extractIntentData(Intent batteryStatus) {
         status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
         present = batteryStatus.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false);
@@ -43,6 +54,7 @@ public class BatteryData {
         technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
         //invalid_charger = batteryStatus.getIntExtra(BatteryManager.EXTRA_INVALID_CHARGER, -1);
     }
+
 
     public String getStatusText() {
         switch(status) {
@@ -83,13 +95,13 @@ public class BatteryData {
     }
 
     public String getPresentText() {
-        return new Boolean(present).toString();
+        return String.valueOf(present);
     }
     public String getLevelText() {
-        return new Integer(level).toString() + "%";
+        return String.valueOf(level*100/scale) + "%";
     }
     public String getScaleText() {
-        return new Integer(scale).toString() + "%";
+        return String.valueOf(scale) + "%";
     }
     public int getIconId() {
         return icon;
@@ -109,12 +121,18 @@ public class BatteryData {
     }
 
     public String getVoltageText() {
-        return new Float(voltage/1000.0).toString() + "V";
+        return String.valueOf(voltage/1000.0) + "V";
     }
     public String getTemperatureText() {
-        return new Float(temperature/10.0).toString() + "°";
+        return String.valueOf(temperature/10.0) + "°";
     }
     public String getTechnologyText() {
         return technology;
+    }
+    public String getCurrentText() {
+        return String.valueOf(current) + " uA";
+    }
+    public String getCurrentAvgText() {
+        return String.valueOf(currentAvg) + " uA";
     }
 }

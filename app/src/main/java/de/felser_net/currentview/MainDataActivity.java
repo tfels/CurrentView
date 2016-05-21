@@ -1,10 +1,8 @@
 package de.felser_net.currentview;
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +17,8 @@ public class MainDataActivity extends AppCompatActivity {
     private TextView txtValueVoltage = null;
     private TextView txtValueTemperature = null;
     private TextView txtValueTechnology = null;
+    private TextView txtValueCurrent = null;
+    private TextView txtValueCurrentAvg = null;
     private ImageView imgIcon = null;
 
     private BatteryData batData;
@@ -37,7 +37,8 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueVoltage = (TextView)findViewById(R.id.textValueVoltage);
         txtValueTemperature = (TextView)findViewById(R.id.textValueTemperature);
         txtValueTechnology = (TextView)findViewById(R.id.textValueTechnology);
-
+        txtValueCurrent = (TextView)findViewById(R.id.textValueCurrent);
+        txtValueCurrentAvg = (TextView)findViewById(R.id.textValueCurrentAvg);
         imgIcon  = (ImageView)findViewById(R.id.imageIcon);
 
         batData = new BatteryData(getApplicationContext());
@@ -63,6 +64,8 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueVoltage.setText(batData.getVoltageText());
         txtValueTemperature.setText(batData.getTemperatureText());
         txtValueTechnology.setText(batData.getTechnologyText());
+        txtValueCurrent.setText(batData.getCurrentText());
+        txtValueCurrentAvg.setText(batData.getCurrentAvgText());
 
         imgIcon.setImageResource(batData.getIconId());
     }

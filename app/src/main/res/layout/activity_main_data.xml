@@ -70,6 +70,20 @@
         android:id="@+id/textTechnology"
         android:layout_below="@+id/textTemperature"
         android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCurrent"
+        android:id="@+id/textCurrent"
+        android:layout_below="@+id/textTechnology"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtCurrentAvg"
+        android:id="@+id/textCurrentAvg"
+        android:layout_below="@+id/textCurrent"
+        android:layout_alignParentStart="true" />
 
 
     <TextView
@@ -135,12 +149,26 @@
         android:id="@+id/textValueTechnology"
         android:layout_alignBottom="@+id/textTechnology"
         android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueCurrent"
+        android:layout_alignBottom="@+id/textCurrent"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/valUnknownValue"
+        android:id="@+id/textValueCurrentAvg"
+        android:layout_alignBottom="@+id/textCurrentAvg"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageIcon"
-        android:layout_below="@+id/textTechnology"
+        android:layout_below="@+id/textValueCurrentAvg"
         android:layout_alignEnd="@+id/textScale" />
 
 </RelativeLayout>

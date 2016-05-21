@@ -10,7 +10,8 @@
     <string name="txtVoltage">Voltage</string>
     <string name="txtTemperature">Temperature</string>
     <string name="txtTechnology">Technology</string>
-
+    <string name="txtCurrent">Current</string>
+    <string name="txtCurrentAvg">avg. Current</string>
 
     <string name="valUnknownValue">&lt;unknown&gt;</string>
 
