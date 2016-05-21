@@ -1,10 +1,10 @@
 package de.felser_net.currentview;
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +20,8 @@ public class MainDataActivity extends AppCompatActivity {
     private TextView txtValueTemperature = null;
     private TextView txtValueTechnology = null;
     private ImageView imgIcon = null;
+    private Button btnOverlayStartStop = null;
+    private boolean overlayRunning = false;
 
     private BatteryData batData;
 
@@ -39,8 +41,22 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueTechnology = (TextView)findViewById(R.id.textValueTechnology);
 
         imgIcon  = (ImageView)findViewById(R.id.imageIcon);
+        btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
 
         batData = new BatteryData(getApplicationContext());
+
+        // setup overlay start/stop button
+        btnOverlayStartStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(overlayRunning) {
+                } else {
+
+                }
+                overlayRunning = !overlayRunning;
+                btnOverlayStartStop.setText(getResources().getString(overlayRunning ? R.string.txtStop : R.string.txtStart));
+            }
+        });
     }
 
     @Override
