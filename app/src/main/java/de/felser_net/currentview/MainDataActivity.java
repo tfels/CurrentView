@@ -3,6 +3,8 @@ package de.felser_net.currentview;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +23,8 @@ public class MainDataActivity extends AppCompatActivity {
     private TextView txtValueCurrentAvg = null;
     private TextView txtDebug = null;
     private ImageView imgIcon = null;
+    private Button btnOverlayStartStop = null;
+    private boolean overlayRunning = false;
 
     private BatteryData batData;
     Handler updateHandler;
@@ -44,6 +48,7 @@ public class MainDataActivity extends AppCompatActivity {
         txtValueCurrentAvg = (TextView)findViewById(R.id.textValueCurrentAvg);
         txtDebug = (TextView)findViewById(R.id.textValueDebug);
         imgIcon  = (ImageView)findViewById(R.id.imageIcon);
+        btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
 
         batData = new BatteryData(getApplicationContext());
 
@@ -57,6 +62,18 @@ public class MainDataActivity extends AppCompatActivity {
             }
         };
 
+        // setup overlay start/stop button
+        btnOverlayStartStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(overlayRunning) {
+                } else {
+
+                }
+                overlayRunning = !overlayRunning;
+                btnOverlayStartStop.setText(getResources().getString(overlayRunning ? R.string.txtStop : R.string.txtStart));
+            }
+        });
     }
 
     @Override
