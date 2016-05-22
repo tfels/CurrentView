@@ -3,8 +3,10 @@ package de.felser_net.currentview;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -19,7 +21,7 @@ import android.widget.Toast;
  */
 public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener {
 
-
+    private SharedPreferences sharedPref = null;
     private WindowManager wm = null;
     private Button overlayedButton = null;
     private float lastMoveX;
@@ -35,6 +37,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     public void onCreate() {
         super.onCreate();
         Log.e("TF", "service on Create");
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
@@ -52,8 +56,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.LEFT | Gravity.TOP;
-        params.x = 0;
-        params.y = 0;
+        params.x = sharedPref.getInt(getString(R.string.saved_overlay_x), 0);
+        params.y = sharedPref.getInt(getString(R.string.saved_overlay_y), 0);
         wm.addView(overlayedButton, params);
     }
 
@@ -61,9 +65,16 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     public void onDestroy() {
         super.onDestroy();
         if (overlayedButton != null) {
+            WindowManager.LayoutParams params = (WindowManager.LayoutParams) overlayedButton.getLayoutParams();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(getString(R.string.saved_overlay_x), params.x);
+            editor.putInt(getString(R.string.saved_overlay_y), params.y);
+            editor.commit();
+
             wm.removeView(overlayedButton);
             overlayedButton = null;
         }
+        sharedPref = null;
     }
 
     @Override

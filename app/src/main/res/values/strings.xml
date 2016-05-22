@@ -35,4 +35,7 @@
     <string name="txtStop">Stop</string>
     <string name="txtStart">Start</string>
 
+    <string name="saved_overlay_x">OverlayX</string>
+    <string name="saved_overlay_y">OverlayY</string>
+
 </resources>
