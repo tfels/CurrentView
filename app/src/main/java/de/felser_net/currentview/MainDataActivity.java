@@ -2,6 +2,7 @@ package de.felser_net.currentview;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -74,7 +75,6 @@ public class MainDataActivity extends AppCompatActivity {
                     if(!testOverlayPermission())
                         return;
                     startService(startMyServiceIntent);
-                    //finish();
                 } else {
                     stopService(startMyServiceIntent);
                 }
@@ -89,7 +89,7 @@ public class MainDataActivity extends AppCompatActivity {
         super.onResume();
         updateHandler.post(updateRunnable);
     }
-
+    int MY_PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW = 0;
     @Override
     protected void onPause() {
         super.onPause();
@@ -97,13 +97,18 @@ public class MainDataActivity extends AppCompatActivity {
     }
 
     public boolean testOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-            return false;
-        }
-        return true;
+        // SYSTEM_ALERT_WINDOW is a special permission that cannot be handled via the
+        // compatibility library (ActivityCompat.requestPermissions).
+        // Therefore we have to check the version.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return true;
+
+        if (Settings.canDrawOverlays(this)) // SDK >= 23 only !!
+            return true;
+
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+        return false;
     }
 
     private int counter = 0;
