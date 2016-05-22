@@ -83,8 +83,9 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             lastMoveX = 0;
             lastMoveY = 0;
             lastMoveValuesValid = false;
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            // get values, calculate offset and save values
             float moveX = event.getRawX();
             float moveY = event.getRawY();
 
@@ -106,6 +107,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             wm.updateViewLayout(overlayedButton, params);
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            // return event as consumed if we moved something,
+            // so that the click event is not triggered
             return lastMoveValuesValid;
         }
         return false;
