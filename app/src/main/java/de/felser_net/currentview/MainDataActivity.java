@@ -1,7 +1,10 @@
 package de.felser_net.currentview;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -66,9 +69,14 @@ public class MainDataActivity extends AppCompatActivity {
         btnOverlayStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(overlayRunning) {
+                Intent startMyServiceIntent = new Intent(getApplicationContext(), OverlayWindowService.class);
+                if(!overlayRunning) {
+                    if(!testOverlayPermission())
+                        return;
+                    startService(startMyServiceIntent);
+                    //finish();
                 } else {
-
+                    stopService(startMyServiceIntent);
                 }
                 overlayRunning = !overlayRunning;
                 btnOverlayStartStop.setText(getResources().getString(overlayRunning ? R.string.txtStop : R.string.txtStart));
@@ -86,6 +94,16 @@ public class MainDataActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         updateHandler.removeCallbacks(updateRunnable);
+    }
+
+    public boolean testOverlayPermission() {
+        if (!Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+            return false;
+        }
+        return true;
     }
 
     private int counter = 0;
