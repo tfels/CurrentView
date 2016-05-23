@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +51,15 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int deviceWidth = size.x;
-        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.AT_MOST);
-        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        final int deviceWidth = size.x;
+        final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.AT_MOST);
+        final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+
+        final Byte alpha = 0x60;
+        final Byte red = 0x00;
+        final Byte green = 0x00;
+        final Byte blue = 0x00;
+        final int color = (alpha << 24) + (red << 16) + (green << 8) + (blue << 0);
 
         // now let's create our TextViews
         int yPos =  sharedPref.getInt(getString(R.string.saved_overlay_y), 0);
@@ -63,7 +68,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         for(int i=0; i<4; i++) {
             TextView txtV = new TextView(this);
             txtV.setText("Text "+i);
-            txtV.setBackgroundColor(0x60000000);
+            txtV.setBackgroundColor(color);
             txtV.setOnTouchListener(this);
             txtV.setOnClickListener(this);
 
@@ -73,7 +78,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
                     WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                     PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.LEFT | Gravity.TOP;
+            params.gravity = Gravity.START | Gravity.TOP;
             params.x = sharedPref.getInt(getString(R.string.saved_overlay_x), 0);
             params.y = yPos;
             wm.addView(txtV, params);
@@ -94,11 +99,11 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(getString(R.string.saved_overlay_x), params.x);
             editor.putInt(getString(R.string.saved_overlay_y), params.y);
-            editor.commit();
+            editor.apply();
         }
-        for (View v : viewElements) {
-            wm.removeView(v);
-        }
+        if(viewElements != null)
+            for (View v : viewElements)
+                wm.removeView(v);
         viewElements = null;
         sharedPref = null;
     }
