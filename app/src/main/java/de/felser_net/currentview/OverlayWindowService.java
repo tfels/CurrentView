@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -69,9 +68,9 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         int yPos =  sharedPref.getInt(getString(R.string.saved_overlay_y), 0);
         viewElements = new ArrayList<TextView>();
 
-        for(int i=0; i<4; i++) {
+        for(DataValue val : uiControl.getBatteryData().getValues()) {
             TextView txtV = new TextView(this);
-            txtV.setText("Text "+i);
+            txtV.setText(val.displayName());
             txtV.setBackgroundColor(color);
             txtV.setOnTouchListener(this);
             txtV.setOnClickListener(this);
@@ -91,6 +90,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             yPos += txtV.getMeasuredHeight();
 
             viewElements.add(txtV);
+            val.setTextView(txtV);
         }
 
         uiControl.Start();
@@ -115,14 +115,9 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         sharedPref = null;
     }
 
-    public void refreshUi(BatteryData batData) {
+    public void refreshUi(List<DataValue> values) {
         if(viewElements == null)
             return;
-        Iterator<TextView> it = viewElements.iterator();
-        if(it.hasNext()) it.next().setText(batData.getCurrentText());
-        if(it.hasNext()) it.next().setText(batData.getCurrentAvgText());
-        if(it.hasNext()) it.next().setText(batData.getVoltageText());
-        if(it.hasNext()) it.next().setText(batData.getTemperatureText());
     }
 
     @Override

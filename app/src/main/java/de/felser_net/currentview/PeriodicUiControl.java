@@ -3,6 +3,8 @@ package de.felser_net.currentview;
 import android.content.Context;
 import android.os.Handler;
 
+import java.util.List;
+
 /**
  * Created by tf on 23.05.2016.
  */
@@ -13,7 +15,7 @@ import android.os.Handler;
  * */
 public class PeriodicUiControl implements Runnable {
     public interface DataListUiView {
-        public void refreshUi(BatteryData batData);
+        public void refreshUi(List<DataValue> values);
     }
 
     private Handler updateHandler;
@@ -33,10 +35,14 @@ public class PeriodicUiControl implements Runnable {
         updateHandler.removeCallbacks(this);
     }
 
+    public BatteryData getBatteryData() {
+        return batData;
+    }
+
     @Override
     public void run(){
         batData.updateData();
-        masterClass.refreshUi(batData);
+        masterClass.refreshUi(batData.getValues());
         updateHandler.postDelayed(this, 1*1000);
     }
 

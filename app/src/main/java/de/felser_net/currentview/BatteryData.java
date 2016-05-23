@@ -5,30 +5,106 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by tf on 30.04.2016.
  */
 public class BatteryData {
 
     private Context context = null;
-
-    private int status = BatteryManager.BATTERY_STATUS_UNKNOWN;
-    private int health = 0;
-    private boolean present = false;
-    private int level = -1;
-    private int scale = -1;
-    private int icon = 0;
-    private int plugged = 0;
-    private int voltage = 0;
-    private int temperature = 0;
-    private String technology = "";
-    private int invalid_charger = 0;
+    List<DataValue> values;
 
     private int current = 0;
     private int currentAvg = 0;
 
     public BatteryData(Context iContext) {
         context = iContext;
+        values = new ArrayList<DataValue>();
+
+        // setup the value list
+        // overwrite some output functions
+        values.add(new DataValue<Integer>()
+                .setValue(0)
+                .setDisplayName(context.getResources().getString(R.string.txtCurrent))
+                .setPostfix(" uA")
+        );
+        values.add(new DataValue<Integer>()
+                .setValue(0)
+                .setDisplayName(context.getResources().getString(R.string.txtCurrentAvg))
+                .setPostfix(" uA")
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        return getStatusText(value);
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtStatus))
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        return getHealthText(value);
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtHealth))
+        );
+
+        values.add(new DataValue<Boolean>()
+                .setValue(false)
+                .setDisplayName(context.getResources().getString(R.string.txtPresent))
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        int scale = (Integer)(values.get(6).value());
+                        return String.valueOf(value * 100 / scale) + "%";
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtLevel))
+        );
+        values.add(new DataValue<Integer>()
+                .setValue(-1)
+                .setDisplayName(context.getResources().getString(R.string.txtScale))
+                .setPostfix("%")
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        return getPluggedText(value);
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtPlugged))
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        return String.valueOf(value / 1000.0) + "V";
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtVoltage))
+                        .setPostfix("V")
+        );
+        values.add(
+                new DataValue<Integer>() {
+                    public String valueText() {
+                        return String.valueOf(value / 10.0) + "°";
+                    }
+                }
+                        .setValue(-1)
+                        .setDisplayName(context.getResources().getString(R.string.txtTemperature))
+        );
+        values.add(new DataValue<String>()
+                .setValue("")
+                .setDisplayName(context.getResources().getString(R.string.txtTechnology))
+        );
     }
 
     public void updateData() {
@@ -36,28 +112,29 @@ public class BatteryData {
         extractIntentData(batteryStatus);
 
         // additional data which is also available in the intent, but this is the official API
-        BatteryManager mBatteryManager = (BatteryManager)context.getSystemService(Context.BATTERY_SERVICE);
-        current = mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-        currentAvg = mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE);
+        BatteryManager mBatteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+        values.get(0).setValue(mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
+        values.get(1).setValue(mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
     }
 
     public void extractIntentData(Intent batteryStatus) {
-        status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
-        present = batteryStatus.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false);
-        level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, -1);
-        plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-        voltage = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
-        temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
-        technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-        //invalid_charger = batteryStatus.getIntExtra(BatteryManager.EXTRA_INVALID_CHARGER, -1);
+        values.get(2).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1));
+        values.get(3).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, -1));
+        values.get(4).setValue(batteryStatus.getBooleanExtra(BatteryManager.EXTRA_PRESENT, false));
+        values.get(5).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1));
+        values.get(6).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1));
+        values.get(7).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1));
+        values.get(8).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1));
+        values.get(9).setValue(batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1));
+        values.get(10).setValue(batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY));
     }
 
+    public List<DataValue> getValues() {
+        return values;
+    }
 
-    public String getStatusText() {
-        switch(status) {
+    private String getStatusText(Integer status) {
+        switch (status) {
             case BatteryManager.BATTERY_STATUS_UNKNOWN:
                 return context.getResources().getString(R.string.valUnknown);
             case BatteryManager.BATTERY_STATUS_CHARGING:
@@ -73,8 +150,8 @@ public class BatteryData {
         }
     }
 
-    public String getHealthText() {
-        switch(health) {
+    private String getHealthText(Integer health) {
+        switch (health) {
             case BatteryManager.BATTERY_HEALTH_UNKNOWN:
                 return context.getResources().getString(R.string.valUnknown);
             case BatteryManager.BATTERY_HEALTH_GOOD:
@@ -94,21 +171,8 @@ public class BatteryData {
         }
     }
 
-    public String getPresentText() {
-        return String.valueOf(present);
-    }
-    public String getLevelText() {
-        return String.valueOf(level*100/scale) + "%";
-    }
-    public String getScaleText() {
-        return String.valueOf(scale) + "%";
-    }
-    public int getIconId() {
-        return icon;
-    }
-
-    public String getPluggedText() {
-        switch(plugged) {
+    private String getPluggedText(Integer plugged) {
+        switch (plugged) {
             case BatteryManager.BATTERY_PLUGGED_AC:
                 return context.getResources().getString(R.string.valAC);
             case BatteryManager.BATTERY_PLUGGED_USB:
@@ -118,21 +182,5 @@ public class BatteryData {
             default:
                 return context.getResources().getString(R.string.valUnknownValue);
         }
-    }
-
-    public String getVoltageText() {
-        return String.valueOf(voltage/1000.0) + "V";
-    }
-    public String getTemperatureText() {
-        return String.valueOf(temperature/10.0) + "°";
-    }
-    public String getTechnologyText() {
-        return technology;
-    }
-    public String getCurrentText() {
-        return String.valueOf(current) + " uA";
-    }
-    public String getCurrentAvgText() {
-        return String.valueOf(currentAvg) + " uA";
     }
 }
