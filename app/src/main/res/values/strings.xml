@@ -13,25 +13,6 @@
     <string name="txtCurrent">Current</string>
     <string name="txtCurrentAvg">avg. Current</string>
 
-    <string name="valUnknownValue">&lt;unknown&gt;</string>
-
-    <string name="valUnknown">Unknown</string>
-    <string name="valCharging">Charging</string>
-    <string name="valDischarging">Discharging</string>
-    <string name="valNotCharging">Not Charging</string>
-    <string name="valFull">Full</string>
-
-    <string name="valGood">Good</string>
-    <string name="valOverHeat">OverHeat</string>
-    <string name="valDead">Dead</string>
-    <string name="valOverVoltage">OverVoltage</string>
-    <string name="valUnspecifiedFailure">unspecified failure</string>
-    <string name="valCold">Cold</string>
-
-    <string name="valAC">AC</string>
-    <string name="valUSB">USB</string>
-    <string name="valWireless">Wireless</string>
-
     <string name="txtStop">Stop</string>
     <string name="txtStart">Start</string>
 
