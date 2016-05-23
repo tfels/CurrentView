@@ -25,7 +25,7 @@ import java.util.List;
  * Created by tf on 21.05.2016.
  * This service creates and manages the overlay window.
  */
-public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener {
+public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener, DataListUiView {
 
     private SharedPreferences sharedPref = null;
     private WindowManager wm = null;
@@ -33,6 +33,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     private float lastMoveY;
     private boolean lastMoveValuesValid = false;
     private List<TextView> viewElements = null;
+
+    private PeriodicUiControl uiControl;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,6 +45,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     public void onCreate() {
         super.onCreate();
         Log.e("TF", "service on Create");
+
+        uiControl = new PeriodicUiControl(this, getApplicationContext());
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -88,11 +92,14 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
 
             viewElements.add(txtV);
         }
+
+        uiControl.Start();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        uiControl.Stop();
         // save position
         if (viewElements != null && !viewElements.isEmpty()) {
             WindowManager.LayoutParams params = (WindowManager.LayoutParams) viewElements.get(0).getLayoutParams();
@@ -106,6 +113,16 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
                 wm.removeView(v);
         viewElements = null;
         sharedPref = null;
+    }
+
+    public void refreshUi(BatteryData batData) {
+        if(viewElements == null)
+            return;
+        Iterator<TextView> it = viewElements.iterator();
+        if(it.hasNext()) it.next().setText(batData.getCurrentText());
+        if(it.hasNext()) it.next().setText(batData.getCurrentAvgText());
+        if(it.hasNext()) it.next().setText(batData.getVoltageText());
+        if(it.hasNext()) it.next().setText(batData.getTemperatureText());
     }
 
     @Override

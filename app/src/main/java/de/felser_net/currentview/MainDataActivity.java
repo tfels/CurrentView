@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainDataActivity extends AppCompatActivity {
+public class MainDataActivity extends AppCompatActivity implements DataListUiView {
 
     private TextView txtValueStatus = null;
     private TextView txtValueHealth = null;
@@ -30,9 +29,7 @@ public class MainDataActivity extends AppCompatActivity {
     private Button btnOverlayStartStop = null;
     private boolean overlayRunning = false;
 
-    private BatteryData batData;
-    Handler updateHandler;
-    private Runnable updateRunnable;
+    private PeriodicUiControl uiControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +51,7 @@ public class MainDataActivity extends AppCompatActivity {
         imgIcon  = (ImageView)findViewById(R.id.imageIcon);
         btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
 
-        batData = new BatteryData(getApplicationContext());
-
-        // prepare data update handler
-        updateHandler = new Handler();
-        updateRunnable = new Runnable(){
-            public void run(){
-                batData.updateData();
-                refreshUi();
-                updateHandler.postDelayed(updateRunnable, 1*1000);
-            }
-        };
+        uiControl = new PeriodicUiControl(this, getApplicationContext());
 
         // setup overlay start/stop button
         btnOverlayStartStop.setOnClickListener(new View.OnClickListener() {
@@ -87,13 +74,12 @@ public class MainDataActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateHandler.post(updateRunnable);
+        uiControl.Start();
     }
-    int MY_PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW = 0;
     @Override
     protected void onPause() {
         super.onPause();
-        updateHandler.removeCallbacks(updateRunnable);
+        uiControl.Stop();
     }
 
     public boolean testOverlayPermission() {
@@ -112,7 +98,7 @@ public class MainDataActivity extends AppCompatActivity {
     }
 
     private int counter = 0;
-    private void refreshUi()
+    public void refreshUi(BatteryData batData)
     {
         txtValueStatus.setText(batData.getStatusText());
         txtValueHealth.setText(batData.getHealthText());
