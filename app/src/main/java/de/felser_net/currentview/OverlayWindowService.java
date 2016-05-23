@@ -25,7 +25,7 @@ import java.util.List;
  * Created by tf on 21.05.2016.
  * This service creates and manages the overlay window.
  */
-public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener, DataListUiView {
+public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener, PeriodicUiControl.DataListUiView {
 
     private SharedPreferences sharedPref = null;
     private WindowManager wm = null;

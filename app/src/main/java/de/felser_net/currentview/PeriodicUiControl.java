@@ -12,6 +12,9 @@ import android.os.Handler;
  * and create/control the TextView elements.
  * */
 public class PeriodicUiControl implements Runnable {
+    public interface DataListUiView {
+        public void refreshUi(BatteryData batData);
+    }
 
     private Handler updateHandler;
     private BatteryData batData;

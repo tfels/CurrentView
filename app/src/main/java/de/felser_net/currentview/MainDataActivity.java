@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainDataActivity extends AppCompatActivity implements DataListUiView {
+public class MainDataActivity extends AppCompatActivity implements PeriodicUiControl.DataListUiView {
 
     private TextView txtValueStatus = null;
     private TextView txtValueHealth = null;
