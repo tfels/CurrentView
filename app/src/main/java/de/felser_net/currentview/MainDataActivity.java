@@ -36,7 +36,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         GridLayout gridLayout = (GridLayout) findViewById(R.id.valueGrid);
         int rowCount = 0;
         GridLayout.Spec columnSpec0 = GridLayout.spec(0, 1.0f);
-        GridLayout.Spec columnSpec1 = GridLayout.spec(1, GridLayout.END, 1.0f);
+        GridLayout.Spec columnSpec1 = GridLayout.spec(1, GridLayout.END);
 
         for(DataValue val : uiControl.getBatteryData().getValues()) {
             GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
