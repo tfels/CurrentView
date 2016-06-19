@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,40 +26,24 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uiControl = new PeriodicUiControl(this, getApplicationContext());
+        //uiControl = new PeriodicUiControl(this, getApplicationContext());
+        uiControl = new PeriodicUiControl(this, this);
 
         setContentView(R.layout.activity_main_data);
 
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         txtDebug = (TextView)findViewById(R.id.textValueDebug);
         btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
 
         // creating the values in the grid layout
-        GridLayout gridLayout = (GridLayout) findViewById(R.id.valueGrid);
-        int rowCount = 0;
-        GridLayout.Spec columnSpec0 = GridLayout.spec(0, 1.0f);
-        GridLayout.Spec columnSpec1 = GridLayout.spec(1, GridLayout.END);
+        GridLayout valueGrid = uiControl.getBatteryData().createValueGrid(true);
 
-        for(DataValue val : uiControl.getBatteryData().getValues()) {
-            GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
-            GridLayout.LayoutParams layoutParams;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
 
-            // create textView for the name
-            TextView txtName = new TextView(this);
-            txtName.setText(val.displayName());
-            layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec0);
-            gridLayout.addView(txtName, layoutParams);
-
-            // create textView for the value
-            TextView txtVal = new TextView(this);
-            txtVal.setText(val.valueText());
-            layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec1);
-            gridLayout.addView(txtVal, layoutParams);
-
-            //viewElements.add(txtV);
-            val.setTextView(txtVal);
-
-            rowCount++;
-        }
+        mainLayout.addView(valueGrid, params);
 
 
         // setup overlay start/stop button

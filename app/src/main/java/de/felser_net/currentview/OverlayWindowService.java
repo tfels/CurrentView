@@ -63,9 +63,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         final Byte blue = 0x00;
         final int color = (alpha << 24) + (red << 16) + (green << 8) + (blue << 0);
 
-        // now let's create our TextViews in a grid layout
-        // first create the grid as TYPE_SYSTEM_ALERT  ...
-        valueGrid = new GridLayout(this);
+        // now let's create our valueGrid as TYPE_SYSTEM_ALERT
+        valueGrid = uiControl.getBatteryData().createValueGrid(false);
         valueGrid.setColumnCount(1);
         valueGrid.setBackgroundColor(color);
         valueGrid.setOnTouchListener(this);
@@ -77,25 +76,6 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 PixelFormat.TRANSLUCENT);
         wm.addView(valueGrid, params);
-
-        // ... now add the text views
-        int rowCount = 0;
-        GridLayout.Spec columnSpec1 = GridLayout.spec(0, GridLayout.END);
-
-        for(DataValue val : uiControl.getBatteryData().getValues()) {
-            GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
-
-            // create textView for the value
-            TextView txtVal = new TextView(this);
-            txtVal.setText(val.valueText());
-
-            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec1);
-            valueGrid.addView(txtVal, layoutParams);
-
-            val.setTextView(txtVal);
-
-            rowCount++;
-        }
 
         uiControl.Start();
     }

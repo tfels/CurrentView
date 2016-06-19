@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.widget.GridLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +133,46 @@ public class BatteryData {
 
     public List<DataValue> getValues() {
         return values;
+    }
+
+    public GridLayout createValueGrid(boolean withNames) {
+        GridLayout valueGrid = new GridLayout(context);
+
+        int valueColumn = 0;
+        if(withNames)
+            valueColumn = 1;
+
+        valueGrid.setColumnCount(valueColumn+1);
+
+        // creating the values in the grid layout
+        int rowCount = 0;
+        GridLayout.Spec columnSpecName = GridLayout.spec(0, 1.0f);
+        GridLayout.Spec columnSpecVal  = GridLayout.spec(valueColumn, GridLayout.END);
+
+        for(DataValue val : getValues()) {
+            GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
+            GridLayout.LayoutParams layoutParams;
+
+            // create textView for the name
+            if(withNames) {
+                TextView txtName = new TextView(context);
+                txtName.setText(val.displayName());
+                layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpecName);
+                valueGrid.addView(txtName, layoutParams);
+            }
+
+            // create textView for the value
+            TextView txtVal = new TextView(context);
+            txtVal.setText(val.valueText());
+            layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpecVal);
+            valueGrid.addView(txtVal, layoutParams);
+
+            //viewElements.add(txtV);
+            val.setTextView(txtVal);
+
+            rowCount++;
+        }
+        return valueGrid;
     }
 
     private String getStatusText(Integer status) {
