@@ -10,12 +10,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +23,14 @@ import java.util.List;
  * Created by tf on 21.05.2016.
  * This service creates and manages the overlay window.
  */
-public class OverlayWindowService extends Service implements View.OnTouchListener, View.OnClickListener, PeriodicUiControl.DataListUiView {
+public class OverlayWindowService extends Service implements View.OnTouchListener, PeriodicUiControl.DataListUiView {
 
     private SharedPreferences sharedPref = null;
     private WindowManager wm = null;
     private float lastMoveX;
     private float lastMoveY;
     private boolean lastMoveValuesValid = false;
+    private GridLayout valueGrid = null;
     private List<TextView> viewElements = null;
 
     private PeriodicUiControl uiControl;
@@ -64,33 +64,40 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         final Byte blue = 0x00;
         final int color = (alpha << 24) + (red << 16) + (green << 8) + (blue << 0);
 
-        // now let's create our TextViews
-        int yPos =  sharedPref.getInt(getString(R.string.saved_overlay_y), 0);
+        // now let's create our TextViews in a grid layout
+        // first create the grid as TYPE_SYSTEM_ALERT  ...
+        valueGrid = new GridLayout(this);
+        valueGrid.setColumnCount(1);
+        valueGrid.setBackgroundColor(color);
+        valueGrid.setOnTouchListener(this);
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
+        wm.addView(valueGrid, params);
+
+        // ... now add the text views
         viewElements = new ArrayList<TextView>();
+        int rowCount = 0;
+        GridLayout.Spec columnSpec1 = GridLayout.spec(0, GridLayout.END);
 
         for(DataValue val : uiControl.getBatteryData().getValues()) {
-            TextView txtV = new TextView(this);
-            txtV.setText(val.displayName());
-            txtV.setBackgroundColor(color);
-            txtV.setOnTouchListener(this);
-            txtV.setOnClickListener(this);
+            GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
 
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                    PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.START | Gravity.TOP;
-            params.x = sharedPref.getInt(getString(R.string.saved_overlay_x), 0);
-            params.y = yPos;
-            wm.addView(txtV, params);
+            // create textView for the value
+            TextView txtVal = new TextView(this);
+            txtVal.setText(val.valueText());
 
-            txtV.measure(widthMeasureSpec, heightMeasureSpec);
-            yPos += txtV.getMeasuredHeight();
+            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec1);
+            valueGrid.addView(txtVal, layoutParams);
 
-            viewElements.add(txtV);
-            val.setTextView(txtV);
+            viewElements.add(txtVal);
+            val.setTextView(txtVal);
+
+            rowCount++;
         }
 
         uiControl.Start();
@@ -101,17 +108,18 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         super.onDestroy();
         uiControl.Stop();
         // save position
-        if (viewElements != null && !viewElements.isEmpty()) {
-            WindowManager.LayoutParams params = (WindowManager.LayoutParams) viewElements.get(0).getLayoutParams();
+        if (valueGrid != null) {
+            WindowManager.LayoutParams params = (WindowManager.LayoutParams) valueGrid.getLayoutParams();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(getString(R.string.saved_overlay_x), params.x);
             editor.putInt(getString(R.string.saved_overlay_y), params.y);
             editor.apply();
         }
-        if(viewElements != null)
-            for (View v : viewElements)
-                wm.removeView(v);
+        if(valueGrid != null)
+            wm.removeView(valueGrid);
+
         viewElements = null;
+        valueGrid = null;
         sharedPref = null;
     }
 
@@ -144,12 +152,10 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             }
 
             // update the position
-            for (View velm : viewElements) {
-                WindowManager.LayoutParams params = (WindowManager.LayoutParams) velm.getLayoutParams();
-                params.x += offsetX;
-                params.y += offsetY;
-                wm.updateViewLayout(velm, params);
-            }
+            WindowManager.LayoutParams params = (WindowManager.LayoutParams) valueGrid.getLayoutParams();
+            params.x += offsetX;
+            params.y += offsetY;
+            wm.updateViewLayout(valueGrid, params);
 
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             // return event as consumed if we moved something,
@@ -157,10 +163,5 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             return lastMoveValuesValid;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View v) {
-        Toast.makeText(this, "Overlay click on " + ((TextView)v).getText(), Toast.LENGTH_SHORT).show();
     }
 }
