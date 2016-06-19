@@ -31,7 +31,6 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     private float lastMoveY;
     private boolean lastMoveValuesValid = false;
     private GridLayout valueGrid = null;
-    private List<TextView> viewElements = null;
 
     private PeriodicUiControl uiControl;
 
@@ -80,7 +79,6 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         wm.addView(valueGrid, params);
 
         // ... now add the text views
-        viewElements = new ArrayList<TextView>();
         int rowCount = 0;
         GridLayout.Spec columnSpec1 = GridLayout.spec(0, GridLayout.END);
 
@@ -94,7 +92,6 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec1);
             valueGrid.addView(txtVal, layoutParams);
 
-            viewElements.add(txtVal);
             val.setTextView(txtVal);
 
             rowCount++;
@@ -118,14 +115,11 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         if(valueGrid != null)
             wm.removeView(valueGrid);
 
-        viewElements = null;
         valueGrid = null;
         sharedPref = null;
     }
 
     public void refreshUi(List<DataValue> values) {
-        if(viewElements == null)
-            return;
     }
 
     @Override
