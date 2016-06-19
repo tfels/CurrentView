@@ -8,7 +8,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -32,34 +32,33 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         txtDebug = (TextView)findViewById(R.id.textValueDebug);
         btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
 
-        RelativeLayout relativeLayout =  (RelativeLayout)findViewById(R.id.mainLayout);
-        View recentView = txtDebug;
+        // creating the values in the grid layout
+        GridLayout gridLayout = (GridLayout) findViewById(R.id.valueGrid);
+        int rowCount = 0;
+        GridLayout.Spec columnSpec0 = GridLayout.spec(0, 1.0f);
+        GridLayout.Spec columnSpec1 = GridLayout.spec(1, GridLayout.END, 1.0f);
 
-        int id = (int)System.currentTimeMillis();
         for(DataValue val : uiControl.getBatteryData().getValues()) {
+            GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
+            GridLayout.LayoutParams layoutParams;
 
             // create textView for the name
             TextView txtName = new TextView(this);
             txtName.setText(val.displayName());
-            txtName.setId(++id);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.BELOW, recentView.getId());
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
-            relativeLayout.addView(txtName, layoutParams);
+            layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec0);
+            gridLayout.addView(txtName, layoutParams);
 
             // create textView for the value
             TextView txtVal = new TextView(this);
             txtVal.setText(val.valueText());
-            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.BELOW, recentView.getId());
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
-            relativeLayout.addView(txtVal, layoutParams);
+            layoutParams = new GridLayout.LayoutParams(rowSpec, columnSpec1);
+            gridLayout.addView(txtVal, layoutParams);
 
             //viewElements.add(txtV);
-            recentView = txtName;
             val.setTextView(txtVal);
-        }
 
+            rowCount++;
+        }
 
 
         // setup overlay start/stop button
