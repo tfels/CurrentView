@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="de.felser_net.currentview.OverlayWindowService"
+            android:name=".OverlayWindowService"
             android:exported="false" />
     </application>
 </manifest>
