@@ -75,7 +75,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         uiControl.Stop();
     }
 
-    public boolean testOverlayPermission() {
+    private boolean testOverlayPermission() {
         // SYSTEM_ALERT_WINDOW is a special permission that cannot be handled via the
         // compatibility library (ActivityCompat.requestPermissions).
         // Therefore we have to check the version.
