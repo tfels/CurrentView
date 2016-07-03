@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class OverlayWindowService extends Service implements View.OnTouchListener, PeriodicUiControl.DataListUiView {
 
+    private static OverlayWindowService instance = null;
+
     private SharedPreferences sharedPref = null;
     private WindowManager wm = null;
     private float lastMoveX;
@@ -43,6 +45,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     public void onCreate() {
         super.onCreate();
         Log.e("TF", "service on Create");
+        instance = this;
 
         uiControl = new PeriodicUiControl(this, getApplicationContext());
 
@@ -83,6 +86,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
     @Override
     public void onDestroy() {
         super.onDestroy();
+        instance = null;
         uiControl.Stop();
         // save position
         if (valueGrid != null) {
@@ -97,6 +101,10 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
 
         valueGrid = null;
         sharedPref = null;
+    }
+
+    public static boolean isRunning() {
+        return instance != null;
     }
 
     public void refreshUi(List<DataValue> values) {

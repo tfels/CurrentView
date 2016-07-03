@@ -47,6 +47,8 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
 
 
         // setup overlay start/stop button
+        overlayRunning = OverlayWindowService.isRunning();
+        btnOverlayStartStop.setText(getResources().getString(overlayRunning ? R.string.txtStop : R.string.txtStart));
         btnOverlayStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
