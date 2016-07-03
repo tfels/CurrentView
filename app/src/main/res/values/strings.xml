@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CurrentView</string>
 
+    <string name="menuitem_settings">Settings</string>
+
     <string name="txtStatus">Status</string>
     <string name="txtHealth">Health</string>
     <string name="txtPresent">Present</string>
