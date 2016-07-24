@@ -90,7 +90,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menuaction_settings:
-                //startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
