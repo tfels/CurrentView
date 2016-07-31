@@ -3,7 +3,9 @@ package de.felser_net.currentview;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.preference.PreferenceManager;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
@@ -14,11 +16,10 @@ import java.util.ArrayList;
  */
 public class BatteryData {
 
+    public static final boolean SHOW_VALUE_DEFAULT_VALUE = true;
+
     private Context context = null;
     ArrayList<DataValue> values;
-
-    private int current = 0;
-    private int currentAvg = 0;
 
     public BatteryData(Context iContext) {
         context = iContext;
@@ -26,18 +27,18 @@ public class BatteryData {
 
         // setup the value list
         // overwrite some output functions
-        values.add(new DataValue<Integer>()
+        values.add(new DataValue<Integer>("current")
                 .setValue(0)
                 .setDisplayName(context.getResources().getString(R.string.txtCurrent))
                 .setPostfix(" uA")
         );
-        values.add(new DataValue<Integer>()
+        values.add(new DataValue<Integer>("avgCurrent")
                 .setValue(0)
                 .setDisplayName(context.getResources().getString(R.string.txtCurrentAvg))
                 .setPostfix(" uA")
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_STATUS) {
                     public String valueText() {
                         return getStatusText(value);
                     }
@@ -46,7 +47,7 @@ public class BatteryData {
                         .setDisplayName(context.getResources().getString(R.string.txtStatus))
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_HEALTH) {
                     public String valueText() {
                         return getHealthText(value);
                     }
@@ -54,13 +55,12 @@ public class BatteryData {
                         .setValue(-1)
                         .setDisplayName(context.getResources().getString(R.string.txtHealth))
         );
-
-        values.add(new DataValue<Boolean>()
+        values.add(new DataValue<Boolean>(BatteryManager.EXTRA_PRESENT)
                 .setValue(false)
                 .setDisplayName(context.getResources().getString(R.string.txtPresent))
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_LEVEL) {
                     public String valueText() {
                         int scale = (Integer)(values.get(6).value());
                         return String.valueOf(value * 100 / scale) + "%";
@@ -69,13 +69,13 @@ public class BatteryData {
                         .setValue(-1)
                         .setDisplayName(context.getResources().getString(R.string.txtLevel))
         );
-        values.add(new DataValue<Integer>()
+        values.add(new DataValue<Integer>(BatteryManager.EXTRA_SCALE)
                 .setValue(-1)
                 .setDisplayName(context.getResources().getString(R.string.txtScale))
                 .setPostfix("%")
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_PLUGGED) {
                     public String valueText() {
                         return getPluggedText(value);
                     }
@@ -84,7 +84,7 @@ public class BatteryData {
                         .setDisplayName(context.getResources().getString(R.string.txtPlugged))
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_VOLTAGE) {
                     public String valueText() {
                         return String.valueOf(value / 1000.0) + "V";
                     }
@@ -94,7 +94,7 @@ public class BatteryData {
                         .setPostfix("V")
         );
         values.add(
-                new DataValue<Integer>() {
+                new DataValue<Integer>(BatteryManager.EXTRA_TEMPERATURE) {
                     public String valueText() {
                         return String.valueOf(value / 10.0) + "°";
                     }
@@ -102,10 +102,13 @@ public class BatteryData {
                         .setValue(-1)
                         .setDisplayName(context.getResources().getString(R.string.txtTemperature))
         );
-        values.add(new DataValue<String>()
+        values.add(new DataValue<String>(BatteryManager.EXTRA_TECHNOLOGY)
                 .setValue("")
                 .setDisplayName(context.getResources().getString(R.string.txtTechnology))
         );
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        LoadSavedViewSettings(sharedPref);
     }
 
     public void updateData() {
@@ -134,7 +137,22 @@ public class BatteryData {
         return values;
     }
 
-    public GridLayout createValueGrid(boolean withNames) {
+    public void LoadSavedViewSettings(SharedPreferences prefs) {
+        String prefix = context.getResources().getString(R.string.pref_key_prefix_main);
+        for (DataValue val: values) {
+            boolean show = prefs.getBoolean(prefix + val.key(), SHOW_VALUE_DEFAULT_VALUE);
+            val.setShowInMainView(show);
+        }
+
+        prefix = context.getResources().getString(R.string.pref_key_prefix_overlay);
+        for (DataValue val: values) {
+            boolean show = prefs.getBoolean(prefix + val.key(), SHOW_VALUE_DEFAULT_VALUE);
+            val.setShowInOverlay(show);
+        }
+    }
+
+
+    public GridLayout createValueGrid(boolean forOverlay, boolean withNames) {
         GridLayout valueGrid = new GridLayout(context);
 
         int valueColumn = 0;
@@ -149,6 +167,11 @@ public class BatteryData {
         GridLayout.Spec columnSpecVal  = GridLayout.spec(valueColumn, GridLayout.END);
 
         for(DataValue val : getValues()) {
+
+            boolean show = forOverlay ? val.showInOverlay() : val.showInMainView();
+            if(!show)
+                continue;
+
             GridLayout.Spec rowSpec = GridLayout.spec(rowCount);
             GridLayout.LayoutParams layoutParams;
 

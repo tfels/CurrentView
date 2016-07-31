@@ -70,7 +70,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         final int color = (alpha << 24) + (red << 16) + (green << 8) + (blue << 0);
 
         // now let's create our valueGrid as TYPE_SYSTEM_ALERT
-        valueGrid = uiControl.getBatteryData().createValueGrid(false);
+        valueGrid = uiControl.getBatteryData().createValueGrid(true, false);
         valueGrid.setColumnCount(1);
         valueGrid.setBackgroundColor(color);
         valueGrid.setOnTouchListener(this);

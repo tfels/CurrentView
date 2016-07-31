@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -202,23 +203,26 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if(!((PreferenceActivity)getActivity()).onIsMultiPane())
                 setHasOptionsMenu(true);
 
+            // get arguments
             Bundle arguments = getArguments();
             ArrayList<DataValue> valueList  = arguments.getParcelableArrayList(START_EXTRA_VALUES);
             String categoryTitle = arguments.getString("cattitle");
             String prefPrefix = arguments.getString("prefprefix");
 
+            // setup category for having an introducing line
             PreferenceScreen screen = getPreferenceScreen();
-
             PreferenceCategory category = new PreferenceCategory(getActivity());
             category.setTitle(categoryTitle);
             screen.addPreference(category);
 
+            // add all the values
             PreferenceGroup valuesPrefGroup = category;
             for(DataValue val : valueList)
             {
                 CheckBoxPreference valuePref = new CheckBoxPreference(getActivity());
                 valuePref.setTitle(val.displayName());
-                valuePref.setKey(prefPrefix + val.displayName());
+                valuePref.setKey(prefPrefix + val.key());
+                valuePref.setDefaultValue(BatteryData.SHOW_VALUE_DEFAULT_VALUE);
                 valuesPrefGroup.addPreference(valuePref);
             }
         }

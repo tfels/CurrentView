@@ -31,6 +31,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
 
         setContentView(R.layout.activity_main_data);
 
+        // get UI elements
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         txtDebug = (TextView)findViewById(R.id.textValueDebug);
         final Button btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStop);
@@ -77,12 +78,6 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
                 finishAndRemoveTask();
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.exit(0);
     }
 
     @Override
