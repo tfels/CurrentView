@@ -25,6 +25,9 @@ import java.util.List;
  */
 public class OverlayWindowService extends Service implements View.OnTouchListener, PeriodicUiControl.DataListUiView {
 
+    public static final String PREFERENCE_KEY_OVERLAY_X = "OverlayX";
+    public static final String PREFERENCE_KEY_OVERLAY_Y = "OverlayY";
+
     private static OverlayWindowService instance = null;
 
     private SharedPreferences sharedPref = null;
@@ -78,6 +81,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 PixelFormat.TRANSLUCENT);
+        params.x = sharedPref.getInt(PREFERENCE_KEY_OVERLAY_X, 0);
+        params.y = sharedPref.getInt(PREFERENCE_KEY_OVERLAY_Y, 0);
         wm.addView(valueGrid, params);
 
         uiControl.Start();
@@ -92,8 +97,8 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         if (valueGrid != null) {
             WindowManager.LayoutParams params = (WindowManager.LayoutParams) valueGrid.getLayoutParams();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(getString(R.string.saved_overlay_x), params.x);
-            editor.putInt(getString(R.string.saved_overlay_y), params.y);
+            editor.putInt(PREFERENCE_KEY_OVERLAY_X, params.x);
+            editor.putInt(PREFERENCE_KEY_OVERLAY_Y, params.y);
             editor.apply();
         }
         if(valueGrid != null)
