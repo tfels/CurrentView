@@ -8,7 +8,6 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by tf on 30.04.2016.
@@ -16,7 +15,7 @@ import java.util.List;
 public class BatteryData {
 
     private Context context = null;
-    List<DataValue> values;
+    ArrayList<DataValue> values;
 
     private int current = 0;
     private int currentAvg = 0;
@@ -131,7 +130,7 @@ public class BatteryData {
         values.get(10).setValue(batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY));
     }
 
-    public List<DataValue> getValues() {
+    public ArrayList<DataValue> getValues() {
         return values;
     }
 

@@ -5,9 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -15,16 +12,14 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceScreen;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
+import android.preference.PreferenceScreen;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +36,8 @@ import java.util.List;
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static final String START_EXTRA_VALUES = "Values";
+
+    private ArrayList<DataValue> valueList = null;
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -107,7 +104,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
 
         Intent i = getIntent();
-        Log.d("***TF***", i.getStringExtra(START_EXTRA_VALUES));
+        valueList = i.getParcelableArrayListExtra(START_EXTRA_VALUES);
     }
 
     /**

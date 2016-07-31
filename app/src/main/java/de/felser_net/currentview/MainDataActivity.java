@@ -91,8 +91,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         switch (item.getItemId()) {
             case R.id.menuaction_settings:
                 Intent startIntent = new Intent(this, SettingsActivity.class);
-                startIntent.putExtra(SettingsActivity.START_EXTRA_VALUES, "Hallo");
-                //startIntent.putExtra(SettingsActivity.START_EXTRA_VALUES, uiControl.getBatteryData());
+                startIntent.putParcelableArrayListExtra(SettingsActivity.START_EXTRA_VALUES, uiControl.getBatteryData().getValues());
                 startActivity(startIntent);
                 return true;
             default:
