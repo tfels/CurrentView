@@ -10,6 +10,18 @@
     <header
         android:fragment="de.felser_net.currentview.SettingsActivity$ValueListPreferenceFragment"
         android:icon="@drawable/ic_value_list"
-        android:title="@string/pref_header_value_list" />
+        android:title="@string/pref_header_value_list_main" >
+        <extra android:name="cattitle" android:value="@string/pref_values_in_main" />
+        <extra android:name="prefprefix" android:value="@string/pref_key_prefix_main" />
+
+    </header>
+
+    <header
+        android:fragment="de.felser_net.currentview.SettingsActivity$ValueListPreferenceFragment"
+        android:icon="@drawable/ic_value_list"
+        android:title="@string/pref_header_value_list_overlay" >
+        <extra android:name="cattitle" android:value="@string/pref_values_in_overlay" />
+        <extra android:name="prefprefix" android:value="@string/pref_key_prefix_overlay" />
+    </header>
 
 </preference-headers>

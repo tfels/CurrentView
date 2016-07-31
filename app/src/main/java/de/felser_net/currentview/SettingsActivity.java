@@ -13,6 +13,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v4.app.NavUtils;
@@ -37,7 +38,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     public static final String START_EXTRA_VALUES = "Values";
 
-    private ArrayList<DataValue> valueList = null;
+    private Bundle extraArguments = null;
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -100,11 +101,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // first get our arguments, then call super method
+        extraArguments = getIntent().getExtras();
+
         super.onCreate(savedInstanceState);
         setupActionBar();
-
-        Intent i = getIntent();
-        valueList = i.getParcelableArrayListExtra(START_EXTRA_VALUES);
     }
 
     /**
@@ -145,6 +146,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
+        // add some arguments to one of the fragment calls
+        for(Header h : target) {
+            if(h.fragment.equals(ValueListPreferenceFragment.class.getName())) {
+                h.fragmentArguments.putAll(extraArguments);
+            }
+        }
     }
 
     /**
@@ -195,26 +202,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if(!((PreferenceActivity)getActivity()).onIsMultiPane())
                 setHasOptionsMenu(true);
 
+            Bundle arguments = getArguments();
+            ArrayList<DataValue> valueList  = arguments.getParcelableArrayList(START_EXTRA_VALUES);
+            String categoryTitle = arguments.getString("cattitle");
+            String prefPrefix = arguments.getString("prefprefix");
+
             PreferenceScreen screen = getPreferenceScreen();
 
             PreferenceCategory category = new PreferenceCategory(getActivity());
-            category.setTitle("values in main view");
+            category.setTitle(categoryTitle);
             screen.addPreference(category);
 
-            CheckBoxPreference checkBoxPref = new CheckBoxPreference(getActivity());
-            checkBoxPref.setTitle("title1");
-            checkBoxPref.setKey("check1");
-            category.addPreference(checkBoxPref);
-
-            checkBoxPref = new CheckBoxPreference(getActivity());
-            checkBoxPref.setTitle("title2");
-            checkBoxPref.setKey("check2");
-            category.addPreference(checkBoxPref);
-
-            PreferenceCategory category2 = new PreferenceCategory(getActivity());
-            category2.setTitle("values in overlay window");
-            screen.addPreference(category2);
-
+            PreferenceGroup valuesPrefGroup = category;
+            for(DataValue val : valueList)
+            {
+                CheckBoxPreference valuePref = new CheckBoxPreference(getActivity());
+                valuePref.setTitle(val.displayName());
+                valuePref.setKey(prefPrefix + val.displayName());
+                valuesPrefGroup.addPreference(valuePref);
+            }
         }
 
         @Override

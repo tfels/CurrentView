@@ -19,18 +19,23 @@
     <string name="txtStart">Start</string>
     <string name="txtExit">Exit</string>
 
-    <string name="saved_overlay_x">OverlayX</string>
-    <string name="saved_overlay_y">OverlayY</string>
-
     <!-- Strings related to Settings -->
     <string name="title_activity_settings">Settings</string>
-
-    <string name="pref_header_value_list">Value List</string>
 
     <!-- General settings -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_enable_notification">Enable notification icon</string>
     <string name="pref_description_notification">Enable an icon in the notification area.</string>
+
+    <!-- Value List settings -->
+    <string name="pref_header_value_list_main">Value List in Main Screen</string>
+    <string name="pref_header_value_list_overlay">Value List in Overlay Window</string>
+
+    <string name="pref_values_in_main">values shown in main activity</string>
+    <string name="pref_values_in_overlay">values shown in overlay windows</string>
+
+    <string name="pref_key_prefix_main">show_values_main_</string>
+    <string name="pref_key_prefix_overlay">show_values_overlay_</string>
 
 </resources>
