@@ -19,8 +19,6 @@ import java.util.List;
 public class MainDataActivity extends AppCompatActivity implements PeriodicUiControl.DataListUiView {
 
     private TextView txtDebug = null;
-
-    private Button btnOverlayStartStop = null;
     private boolean overlayRunning = false;
 
     private PeriodicUiControl uiControl;
@@ -35,7 +33,8 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
 
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
         txtDebug = (TextView)findViewById(R.id.textValueDebug);
-        btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStopButton);
+        final Button btnOverlayStartStop = (Button)findViewById(R.id.buttonOverlayStartStop);
+        final Button btnExit = (Button)findViewById(R.id.buttonExit);
 
         // creating the values in the grid layout
         GridLayout valueGrid = uiControl.getBatteryData().createValueGrid(true);
@@ -66,6 +65,24 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
                 btnOverlayStartStop.setText(getResources().getString(overlayRunning ? R.string.txtStop : R.string.txtStart));
             }
         });
+
+        // setup exit button
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startMyServiceIntent = new Intent(getApplicationContext(), OverlayWindowService.class);
+                stopService(startMyServiceIntent);
+
+                finishAffinity();
+                finishAndRemoveTask();
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0);
     }
 
     @Override
