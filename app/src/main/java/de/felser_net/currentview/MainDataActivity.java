@@ -38,7 +38,7 @@ public class MainDataActivity extends AppCompatActivity implements PeriodicUiCon
         final Button btnExit = (Button)findViewById(R.id.buttonExit);
 
         // creating the values in the grid layout
-        GridLayout valueGrid = uiControl.getBatteryData().createValueGrid(true);
+        GridLayout valueGrid = uiControl.getBatteryData().createValueGrid(false, true);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
