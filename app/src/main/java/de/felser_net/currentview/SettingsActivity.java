@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -17,8 +16,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
+import androidx.core.app.NavUtils;
+import androidx.appcompat.app.ActionBar;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
