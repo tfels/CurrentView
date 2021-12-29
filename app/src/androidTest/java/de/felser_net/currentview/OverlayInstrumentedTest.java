@@ -7,12 +7,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 import android.Manifest;
-import android.util.Log;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.ViewInteraction;
@@ -22,18 +23,19 @@ import androidx.test.rule.GrantPermissionRule;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class OverlayInstrumentedTest {
     public static final String PACKAGE_NAME = "de.felser_net.currentview";
     public static final String TAG = "TF";
 
+    private UiDevice mDevice;
     // the activity is to be launched before each test
     //@Rule
     //public ActivityScenarioRule<MainDataActivity> activityTestRule = new ActivityScenarioRule<>(MainDataActivity.class);
@@ -42,6 +44,11 @@ public class OverlayInstrumentedTest {
     // adb shell pm grant de.felser_net.currentview android.permission.SYSTEM_ALERT_WINDOW
     @Rule
     public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(Manifest.permission.SYSTEM_ALERT_WINDOW);
+
+    @Before
+    public void init() {
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    }
 
     @Test
     public void startOverlay(){
@@ -55,12 +62,10 @@ public class OverlayInstrumentedTest {
         buttonStartStop.perform(click());
 
         // now let's search the overlay window
-        //listDeviceObjects();
         UiObject2 overlayWindow = getOverlayWindow();
         if(overlayWindow == null)
             throw new RuntimeException("Unable to find Overlay Window");
-        //assertThat(overlayWindow, notNullValue());
-        //assertNotNull(overlayWindow);
+        assertThat(overlayWindow, notNullValue());
 
         // and close again
         buttonStartStop.check(matches(isDisplayed()));
@@ -72,47 +77,11 @@ public class OverlayInstrumentedTest {
     }
 
     private UiObject2 getOverlayWindow() {
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        List<UiObject2> list = device.findObjects(By.pkg(PACKAGE_NAME));
+        //mDevice.wait(Until.hasObject(By.desc("CurrentView Overlay Window")), 2*1000);
 
-        for(UiObject2 item: list) {
-            String text = item.getContentDescription();
-            if(text != null && text.equals("CurrentView Overlay Window"))
-                return item;
-        }
-        return null;
-    }
-
-    // some test dump functions
-    private void listDeviceObjects() {
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        List<UiObject2> list = device.findObjects(By.pkg(PACKAGE_NAME));
-
-        for(UiObject2 item: list) {
-            String text = item.getText();
-            if (text != null && text.equals("Not Charging")) {
-                Log.d(TAG, "found: parent=");
-                dumpItemInfoPath(item, null);
-            }
-        }
-    }
-
-    private void dumpItemInfoPath(UiObject2 item, String prefix) {
-
-        if (prefix == null)
-            prefix= "";
-
-        String info = prefix;
-        info += " classname="+ item.getClassName();
-        //info += " text="+ item.getText();
-        info += " desc="+ item.getContentDescription();
-        //info += " res="+ item.getResourceName();
-        //info += " pkg="+ item.getApplicationPackage();
-        UiObject2 parent = item.getParent();
-        //info += " parent="+ parent;
-        Log.d(TAG, info);
-        if(parent != null) {
-            dumpItemInfoPath(parent, prefix + "   ");
-        }
+        UiObject2 myObject = mDevice.findObject(By.desc("CurrentView Overlay Window"));
+        if(myObject != null)
+            assertThat(myObject.getApplicationPackage(), is(equalTo(PACKAGE_NAME)));
+        return myObject;
     }
 }
