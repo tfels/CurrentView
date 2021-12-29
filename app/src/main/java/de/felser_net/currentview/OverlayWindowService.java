@@ -75,7 +75,7 @@ public class OverlayWindowService extends Service implements View.OnTouchListene
         valueGrid.setColumnCount(1);
         valueGrid.setBackgroundColor(color);
         valueGrid.setOnTouchListener(this);
-
+        valueGrid.setContentDescription("CurrentView Overlay Window");
         int overlayFlag = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
                 : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
