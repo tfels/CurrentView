@@ -7,7 +7,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 import android.Manifest;
@@ -56,11 +57,18 @@ public class OverlayInstrumentedTest {
         // now let's search the overlay window
         //listDeviceObjects();
         UiObject2 overlayWindow = getOverlayWindow();
-
         if(overlayWindow == null)
             throw new RuntimeException("Unable to find Overlay Window");
         //assertThat(overlayWindow, notNullValue());
         //assertNotNull(overlayWindow);
+
+        // and close again
+        buttonStartStop.check(matches(isDisplayed()));
+        buttonStartStop.check(matches(withText("Stop")));
+        buttonStartStop.perform(click());
+
+        overlayWindow = getOverlayWindow();
+        assertThat(overlayWindow, is(nullValue()));
     }
 
     private UiObject2 getOverlayWindow() {
